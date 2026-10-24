@@ -4,10 +4,10 @@ Follow higher-priority instructions, the current task, and existing trusted proj
 
 ## Pinned public source
 
-Use the published XYZ Skills snapshot `3c7f5279f5978bd67ed8f98b0218eef8379e11b8`:
+Use the published XYZ Skills snapshot `29b619c1552cc076049de86ba93fc77776cb2b32`:
 
-- Index: https://raw.githubusercontent.com/nickza2016/xyz-skills/3c7f5279f5978bd67ed8f98b0218eef8379e11b8/README.md
-- First-use setup: https://raw.githubusercontent.com/nickza2016/xyz-skills/3c7f5279f5978bd67ed8f98b0218eef8379e11b8/skills/initializing-agent-teams/SKILL.md
+- Index: https://raw.githubusercontent.com/nickza2016/skills/29b619c1552cc076049de86ba93fc77776cb2b32/README.md
+- First-use setup: https://raw.githubusercontent.com/nickza2016/skills/29b619c1552cc076049de86ba93fc77776cb2b32/skills/initializing-agent-teams/SKILL.md
 
 Read these with an available web/HTTP tool at task start, then load only the skills and resources relevant to the task. Resolve relative links against their remote document URLs at this exact commit, not against this project's directory. Do not silently switch to main or another revision.
 

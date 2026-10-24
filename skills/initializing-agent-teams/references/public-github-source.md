@@ -1,16 +1,16 @@
 # Pinned public GitHub source
 
-Keep a small local AGENTS.md (and Claude's CLAUDE.md import when needed), but point its resource instructions to public `nickza2016/xyz-skills` rather than a workstation checkout. A URL in instructions is not a native remote import: the agent needs web/HTTP tools, network access, and applicable permission to read it. Startup-file loading limitations still apply.
+Keep a small local AGENTS.md (and Claude's CLAUDE.md import when needed), but point its resource instructions to public `nickza2016/skills` rather than a workstation checkout. A URL in instructions is not a native remote import: the agent needs web/HTTP tools, network access, and applicable permission to read it. Startup-file loading limitations still apply.
 
 ## Quick setup
 
 From an already reviewed local copy of the helper, preview:
 
 ```text
-node "<xyz-skills>/skills/initializing-agent-teams/scripts/init-agent-team.mjs" --project "<project>" --harness cursor --github-ref "3c7f5279f5978bd67ed8f98b0218eef8379e11b8"
+node "<xyz-skills>/skills/initializing-agent-teams/scripts/init-agent-team.mjs" --project "<project>" --harness cursor --github-ref "29b619c1552cc076049de86ba93fc77776cb2b32"
 ```
 
-The copy-ready example uses the published snapshot `3c7f5279f5978bd67ed8f98b0218eef8379e11b8`, the latest main revision verified when the example was updated. Its source base is `https://raw.githubusercontent.com/nickza2016/xyz-skills/3c7f5279f5978bd67ed8f98b0218eef8379e11b8`. Every README, skill, reference, asset, and relative link must resolve at that same revision. Model/tool/file approval requirements remain unchanged.
+The copy-ready example uses the published snapshot `29b619c1552cc076049de86ba93fc77776cb2b32`, the latest main revision verified when the example was updated. Its source base is `https://raw.githubusercontent.com/nickza2016/skills/29b619c1552cc076049de86ba93fc77776cb2b32`. Every README, skill, reference, asset, and relative link must resolve at that same revision. Model/tool/file approval requirements remain unchanged.
 
 For setup without running a helper, copy the bundled `examples/new-project/AGENTS.md` into the target project and, for Claude, the adjacent CLAUDE.md import file. These small files instruct an agent to retrieve public guidance and ask before configuration; they do not themselves install skills, execute code, or guarantee instruction loading. Preserve existing project rules. The example is added after the pinned skill snapshot, so its files are read from the current bundle while the guidance URLs point to the prior published snapshot.
 

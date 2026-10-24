@@ -87,8 +87,8 @@ function sourceBinding(options) {
     if (options.bundle) fail('Choose --bundle or --github-ref, not both');
     if (typeof options.githubRef !== 'string' || !/^[a-fA-F0-9]{40}$/.test(options.githubRef)) fail('--github-ref requires a full 40-character commit SHA, not a mutable branch/tag');
     const ref = options.githubRef.toLowerCase();
-    return { kind: 'github', repository: 'nickza2016/xyz-skills', ref,
-      baseUrl: `https://raw.githubusercontent.com/nickza2016/xyz-skills/${ref}` };
+    return { kind: 'github', repository: 'nickza2016/skills', ref,
+      baseUrl: `https://raw.githubusercontent.com/nickza2016/skills/${ref}` };
   }
   const root = fs.realpathSync(path.resolve(options.bundle ?? path.join(here, '../../..')));
   if (/[\r\n`]/.test(root) || !fs.existsSync(path.join(root, 'skills/initializing-agent-teams/SKILL.md'))

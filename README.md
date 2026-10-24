@@ -22,7 +22,7 @@ This bundle provides instructions, references, and a local agent-configuration h
 
 ## For an AI asked to install this repository into a project
 
-When the user says "install https://github.com/nickza2016/xyz-skills into this project, replace duplicate skills," **do not stop after copying skills or suggesting models**. Follow the complete [project installation and subagent setup guide](skills/initializing-agent-teams/references/installing-in-project.md): inspect the target project and installed harness, resolve and record one public source commit, install each complete skill directory using that harness's project-local discovery mechanism, and replace only same-name XYZ Skills copies when the user authorized replacement. Preserve unrelated instructions, custom agents, and local work.
+When the user says "install https://github.com/nickza2016/skills into this project, replace duplicate skills," **do not stop after copying skills or suggesting models**. Follow the complete [project installation and subagent setup guide](skills/initializing-agent-teams/references/installing-in-project.md): inspect the target project and installed harness, resolve and record one public source commit, install each complete skill directory using that harness's project-local discovery mechanism, and replace only same-name XYZ Skills copies when the user authorized replacement. Preserve unrelated instructions, custom agents, and local work.
 
 Then read [initializing-agent-teams](skills/initializing-agent-teams/SKILL.md). Show one quickly confirmable set of model defaults and file changes. **After the user's confirmation**, create all seven *definitions* for the active harness in the target project, verify native discovery and model/tool behavior as far as the installed client permits, and continue the original task. Do not merely describe or promise creation. Seven definitions do not mean seven agents run on every task. A URL or copied AGENTS.md alone does not install skills or create agents; Pi also requires a compatible trusted extension. Never silently switch providers, install extensions, overwrite unrelated project rules, or commit/push/deploy without separate authorization.
 
@@ -38,11 +38,11 @@ This is dry-run by default. After confirming the displayed plan/models and insta
 
 The helper creates a small AGENTS.md entrypoint, a CLAUDE.md import for Claude, seven native role definitions, and a per-harness manifest. It does not launch agents or switch the running model. A linked checkout must remain accessible; shared/offline portability needs an agreed vendoring or checkout strategy. Native startup loading varies, and Letta automatic injection is not established by merely creating AGENTS.md. See [first-use details](skills/initializing-agent-teams/references/first-use-and-entrypoints.md).
 
-To point project instructions to **public GitHub** instead of a workstation path, add `--github-ref "3c7f5279f5978bd67ed8f98b0218eef8379e11b8"` for the published snapshot used below. Every resource is pinned to that revision; apply also requires `--github-source-confirmed` after checking that published files exist and match the reviewed renderer/contracts. The helper does no fetching or remote execution, and a URL is not guaranteed to auto-import in every client. See [public GitHub mode](skills/initializing-agent-teams/references/public-github-source.md). New local features are unavailable through GitHub until separately published.
+To point project instructions to **public GitHub** instead of a workstation path, add `--github-ref "29b619c1552cc076049de86ba93fc77776cb2b32"` for the published snapshot used below. Every resource is pinned to that revision; apply also requires `--github-source-confirmed` after checking that published files exist and match the reviewed renderer/contracts. The helper does no fetching or remote execution, and a URL is not guaranteed to auto-import in every client. See [public GitHub mode](skills/initializing-agent-teams/references/public-github-source.md). New local features are unavailable through GitHub until separately published.
 
 ## Copy-ready new-project example
 
-Pinned skill snapshot: **`3c7f5279f5978bd67ed8f98b0218eef8379e11b8`**, the latest published main revision verified when this example was updated. This is a real source commit, not a placeholder. The later documentation commit intentionally has a different SHA; do not make a document attempt to contain its own commit hash. Upgrade this pin deliberately when choosing a newer skill snapshot, not automatically on each chat.
+Pinned skill snapshot: **`29b619c1552cc076049de86ba93fc77776cb2b32`**, the latest published main revision verified when this example was updated. This is a real source commit, not a placeholder. The later documentation commit intentionally has a different SHA; do not make a document attempt to contain its own commit hash. Upgrade this pin deliberately when choosing a newer skill snapshot, not automatically on each chat.
 
 1. Create/open the intended project folder, for example `D:\works\my-api`.
 2. Copy [examples/new-project/AGENTS.md](examples/new-project/AGENTS.md) into that project's root. It already contains public raw-GitHub URLs with the pinned SHA; no local XYZ Skills checkout path is embedded.
@@ -63,7 +63,7 @@ Load only the XYZ Skills needed for each task. Do not commit, push, or deploy.
 Direct bootstrap URL for the copy-ready example:
 
 ```text
-https://raw.githubusercontent.com/nickza2016/xyz-skills/3c7f5279f5978bd67ed8f98b0218eef8379e11b8/skills/initializing-agent-teams/SKILL.md
+https://raw.githubusercontent.com/nickza2016/skills/29b619c1552cc076049de86ba93fc77776cb2b32/skills/initializing-agent-teams/SKILL.md
 ```
 
 An agent still needs approved web/HTTP access (or an approved same-commit cache). Copying these instruction files does not fetch/execute code, launch agents, configure models, or establish native activation by itself.

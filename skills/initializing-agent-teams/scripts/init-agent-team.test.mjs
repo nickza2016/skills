@@ -215,7 +215,7 @@ test('GitHub source pins resources and emits no local checkout path', () => proj
   assert.equal(plan.source.kind, 'github');
   assert.equal(plan.source.ref, fixtureRef);
   const entry = plan.files.find(file => file.relative === 'AGENTS.md').content;
-  assert.ok(entry.includes(`https://raw.githubusercontent.com/nickza2016/xyz-skills/${fixtureRef}/README.md`));
+  assert.ok(entry.includes(`https://raw.githubusercontent.com/nickza2016/skills/${fixtureRef}/README.md`));
   assert.ok(entry.includes('same commit'));
   assert.ok(entry.includes('not a guaranteed automatic import'));
   assert.ok(entry.includes('never execute downloaded scripts'));
