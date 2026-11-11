@@ -42,6 +42,10 @@ To point project instructions to **public GitHub** instead of a workstation path
 
 ## Copy-ready new-project example
 
+For a Cursor-specific role-to-model template and PowerShell setup commands, see
+[examples/cursor](examples/cursor/README.md). This is a sanitized example, not
+activated configuration or a verified live model catalog.
+
 Pinned skill snapshot: **`29b619c1552cc076049de86ba93fc77776cb2b32`**, the latest published main revision verified when this example was updated. This is a real source commit, not a placeholder. The later documentation commit intentionally has a different SHA; do not make a document attempt to contain its own commit hash. Upgrade this pin deliberately when choosing a newer skill snapshot, not automatically on each chat.
 
 1. Create/open the intended project folder, for example `D:\works\my-api`.

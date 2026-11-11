@@ -1,0 +1,13 @@
+{
+  "lastAgent": "agent-local-70e81058-0759-4d62-8f87-6e1b63aabe01",
+  "sessionsByServer": {
+    "local:A:\\localterm-portable-tools-20261027\\bin\\portable-data\\profiles\\herdr\\home\\.letta\\local": {
+      "agentId": "agent-local-70e81058-0759-4d62-8f87-6e1b63aabe01",
+      "conversationId": "local-conv-17"
+    }
+  },
+  "lastSession": {
+    "agentId": "agent-local-70e81058-0759-4d62-8f87-6e1b63aabe01",
+    "conversationId": "local-conv-17"
+  }
+}

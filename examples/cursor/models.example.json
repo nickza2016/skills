@@ -1,0 +1,9 @@
+{
+  "scout": "composer-2.5-fast",
+  "implementer": "grok-4.7-high-fast",
+  "verifier": "claude-sonnet-5-5-high",
+  "advisor": "claude-opus-5-5-medium",
+  "git-publisher": "composer-2.5-fast",
+  "db-reviewer": "claude-opus-5-5-medium",
+  "security-reviewer": "claude-opus-5-5-medium"
+}
