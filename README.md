@@ -10,7 +10,7 @@ Portable Agent Skills for working in the XYZ style. Keep personal defaults separ
 | [designing-backend-systems](skills/designing-backend-systems/SKILL.md) | Discover detailed requirements, design simple extensible PostgreSQL-backed systems and normalized reusable data, consider Redis for justified high-RPS reads, and iterate on shareable DB diagrams with the team before implementation. |
 | [bootstrapping-go-backends](skills/bootstrapping-go-backends/SKILL.md) | Create a Go backend repository that can contain multiple applications in one Go module, with shared packages, PostgreSQL, and the selected HTTP/job libraries. |
 | [debugging-backend-issues](skills/debugging-backend-issues/SKILL.md) | Reproduce a bug safely, establish its cause, add missing red/green regression coverage, apply a minimal authorized fix, and rerun the original case and related tests to completion. |
-| [deploying-go-to-nortezh](skills/deploying-go-to-nortezh/SKILL.md) | Prepare per-application Dockerfiles, GHCR publishing, GitHub Actions, and Nortezh staging/production deployment templates without authorizing a live deployment. |
+| [deploying-go-to-nortezh](skills/deploying-go-to-nortezh/SKILL.md) | Prepare Go Dockerfiles and GitHub Actions using the supplied-file Artifact Registry/Deploys.app pattern by default; retain GHCR/Nortezh as an explicit alternative, without authorizing live publication/deployment. |
 | [reviewing-backend-prs](skills/reviewing-backend-prs/SKILL.md) | Review backend diffs pragmatically with exact task logic, safe related tests, and isolated original/alternative measurements when useful; prioritize dangerous, financial, and material-performance defects without style gatekeeping. |
 | [committing-to-github](skills/committing-to-github/SKILL.md) | Deliver ready cross-task changes on one fresh branch, prefer one commit or a small same-branch split, exclude credentials, and open a PR covering all shipped work; stop/report push or PR failure without hunting keys. |
 
@@ -41,6 +41,11 @@ The helper creates a small AGENTS.md entrypoint, a CLAUDE.md import for Claude, 
 To point project instructions to **public GitHub** instead of a workstation path, add `--github-ref "29b619c1552cc076049de86ba93fc77776cb2b32"` for the published snapshot used below. Every resource is pinned to that revision; apply also requires `--github-source-confirmed` after checking that published files exist and match the reviewed renderer/contracts. The helper does no fetching or remote execution, and a URL is not guaranteed to auto-import in every client. See [public GitHub mode](skills/initializing-agent-teams/references/public-github-source.md). New local features are unavailable through GitHub until separately published.
 
 ## Copy-ready new-project example
+
+For deployment templates based on the supplied Dockerfile/staging workflow, see
+[examples/deployment](examples/deployment/README.md). New deployment authoring
+uses this sanitized Artifact Registry/Deploys.app pattern unless the target
+explicitly requires another platform; no source project identifiers are copied.
 
 For a Cursor-specific role-to-model template and PowerShell setup commands, see
 [examples/cursor](examples/cursor/README.md). This is a sanitized example, not

@@ -1,5 +1,9 @@
 # Delivery source baseline
 
+This file records the retained **GHCR/Nortezh alternative**, not the new default.
+For supplied-file Artifact Registry/Deploys.app evidence and sanitization rules,
+read [the default deployment pattern](deploys-pattern.md).
+
 ## Evidence
 
 - Reference: Olufy-API, commit `01731b564d56dfb72755fe9421515aafc894b3dc`, inspected read-only on 2026-10-22.

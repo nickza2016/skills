@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+FROM golang:__GO_VERSION__ AS builder
+
+ENV GOOS=linux
+ENV GOARCH=amd64
+ENV CGO_ENABLED=0
+
+WORKDIR /workspace
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+# Generate pinned, app-specific Swagger here only if this application needs it.
+RUN go build -trimpath -o .build/__APP__ -ldflags "-w -s" ./cmd/__APP__
+
+FROM gcr.io/distroless/static-debian12:nonroot
+
+WORKDIR /app
+COPY --from=builder --link --chown=65532:65532 /workspace/.build/__APP__ ./
+# Explicitly COPY only required, non-secret runtime assets.
+USER 65532:65532
+ENTRYPOINT ["/app/__APP__"]

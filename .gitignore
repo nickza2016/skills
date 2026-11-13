@@ -1,2 +1,5 @@
 .DS_Store
 /cursor.json
+# Local deployment references supplied for template authoring, not publication.
+/Dockerfile
+/api-staging.yaml
