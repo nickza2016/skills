@@ -44,10 +44,15 @@ Model the project as **one repository and one Go module containing one or more a
     01.sql                     # this project's own schema
     seed.sql                   # optional explicit test/development seed
   docs/                        # integration and operational documentation
-  build/<app>/Dockerfile       # only when container delivery is requested
+  cmd/<app>/Dockerfile         # default delivery pattern; only when requested
 ```
 
 The placeholders are roles, not literal folder names or a mandatory application count. Create only the packages needed by the first vertical slice. An application can be named for a product, domain, audience, or operational responsibility; do not automatically create a user/admin pair.
+
+For deployment, follow the selected delivery skill/target repository. The default
+supplied-file pattern places the Dockerfile beside `cmd/<app>/main.go`; the
+explicit GHCR/Nortezh alternative uses `build/<app>/Dockerfile` instead. Neither
+placement changes the module-root Docker build context.
 
 ## Ownership rules
 

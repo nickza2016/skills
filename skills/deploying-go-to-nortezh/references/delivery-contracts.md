@@ -1,5 +1,9 @@
 # Delivery contracts
 
+These contracts apply to the explicitly selected **GHCR/Nortezh alternative**.
+For the default supplied-file Artifact Registry/Deploys.app workflow and
+`cmd/<app>/Dockerfile` placement, use [the Deploys.app pattern](deploys-pattern.md).
+
 ## Application and image boundaries
 
 Build from the root Go module using `build/<app>/Dockerfile`. Keep one output binary per image unless the task explicitly calls for a multi-process container. A separate image does not require a separate Go module.

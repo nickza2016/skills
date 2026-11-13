@@ -1,24 +1,30 @@
 ---
 name: deploying-go-to-nortezh
-description: Authors Dockerfiles and GitHub Actions workflows for Go applications deployed to Nortezh through GHCR and Nortezh/nortezh-action. Supports named applications within one Go module, separate staging/production triggers, WebService or Worker targets, and explicit deployment configuration. Use when preparing container builds, CI workflows, or Nortezh deployment files. Does not authorize live image publication, deployment, secret provisioning, or changes to an existing platform target.
+description: Authors Go Dockerfiles and GitHub Actions deployment workflows. Defaults to the supplied-file Google Artifact Registry and deploys-app/deploys-action pattern with digest handoff; retains GHCR/Nortezh as an explicit alternative. Supports named applications within one Go module and target-specific configuration. Use when preparing container builds, CI/CD workflows, or Deploys.app/Nortezh deployment files. Does not authorize live publication, deployment, secret provisioning, or platform changes.
 ---
 
-# Prepare Go Delivery to Nortezh
+# Prepare Go Delivery
 
 On first project use, follow [agent setup](../initializing-agent-teams/SKILL.md) when available. The parent asks once before configuration/model changes; delegated children do not initialize again. Missing, declined, or non-interactive setup does not block the task or force delegation.
 
-Use the Olufy-derived delivery pattern: test the selected source revision, build a per-application image from the module root, publish to GHCR, and pass that exact image reference to Nortezh. Derive application names from the target project; do not copy the source application's identity or environment settings.
+Use the [supplied-file deployment pattern](references/deploys-pattern.md) by default for new deployment authoring: verify the selected source, build a per-app image from the module root, publish to Google Artifact Registry, and hand `repository@digest` to dependent Deploys.app jobs. Derive every application/target identifier from the target requirements, never from the supplied source files. Preserve an existing project's selected platform unless explicitly changing it. Keep the GHCR/Nortezh assets below only as an explicitly selected alternative; the skill's directory name remains unchanged for compatibility.
+
+## Default: supplied-file Artifact Registry / Deploys.app pattern
+
+Read [the pattern and configuration contract](references/deploys-pattern.md) before preparing a new deployment. Render [the Dockerfile](assets/deploys/Dockerfile.tmpl) to `cmd/<app>/Dockerfile` and [the staging workflow](assets/deploys/workflow-staging.yaml.tmpl) to `.github/workflows/<app>-staging.yaml`; merge [context exclusions](assets/dockerignore.tmpl). Replace `__APP__`/`__GO_VERSION__` with confirmed target values. Keep source verification, build-job digest output, and downstream deploy dependencies. Enable the optional second target only when required. Do not infer a production release policy from a staging example.
+
+Apply the scope/privacy/validation boundaries below to both variants. The remaining materialization steps and `NTZ_*` configuration are for the **GHCR/Nortezh alternative only**; do not mix them into the default Deploys.app workflow.
 
 ## Boundaries and inputs
 
 - Author all skill artifacts in English. Follow the target repository's instructions and current request before this baseline.
 - Treat pipeline preparation, image publication, and live deployment as separate permissions. Templates in this bundle are inert assets, not active workflows.
 - Inspect the target module, application roots, runtime assets, migrations, and existing workflows before replacing anything. Preserve dirty/unrelated work.
-- Establish application names, target platform/architecture, Go version, runtime assets, Swagger needs, GitHub environments, and whether the Nortezh target is `WebService` or `Worker`.
+- Establish application names, registry/deployment platform, architecture, Go version, runtime assets, Swagger needs, protected GitHub environments, target count, and `WebService`/`Worker` responsibilities.
 - Obtain non-secret project/location/deployment identifiers through the approved configuration channel. Reference secret names, never ask for key values in chat or commit them.
-- Read [delivery contracts](references/delivery-contracts.md) for environment setup, security, rollout, and validation. Read [source baseline](references/source-baseline.md) for verified action inputs, source facts, and deliberate differences.
+- For the default, use [Deploys.app configuration and action evidence](references/deploys-pattern.md). For explicit GHCR/Nortezh, read [delivery contracts](references/delivery-contracts.md) and [source baseline](references/source-baseline.md). Never assume credentials or identifiers transfer between these platforms.
 
-## Workflow
+## Alternative workflow: explicitly selected GHCR / Nortezh
 
 ### 1. Map source and runtime dependencies
 
@@ -54,4 +60,4 @@ The reusable pipeline tests before publication, uses per-app/environment build c
 
 ## Template limitations
 
-The included files are a tested-as-text starting point, not universal deployment configuration. Existing platform env/secrets, scaling, storage, database access, health checks, and migration rollout must be configured for the target. The Nortezh action may create a new deployment when the name does not exist; confirm identity before a live run.
+The included files are a static starting point, not universal deployment configuration. Existing platform env/secrets, scaling, storage, database access, health checks, and migration rollout must be configured for the target. Deployment actions may create missing targets; confirm identity and creation authority before any live run. Report static checks, image builds, publication, and rollout separately for either variant.

@@ -1,0 +1,143 @@
+name: Example __APP__ staging
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - go.mod
+      - go.sum
+      - __APP__/**
+      - cmd/__APP__/**
+      - pkg/**
+      - schema/**
+      - .dockerignore
+      - .github/workflows/__APP__-staging.yaml
+      # Add other shared dependencies and required runtime assets.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploys-__APP__-staging
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      # Adapt only to the target's inspected, isolated test harness.
+      - name: Verify selected source without deployment credentials
+        env:
+          TEST_DB_MODE: embedded
+        run: |
+          go mod download
+          go build ./...
+          go vet ./...
+          go test -p 4 ./...
+
+  build-example:
+    name: Build example application
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: __APP__-staging-build
+    outputs:
+      image: ${{ steps.image.outputs.repository }}@${{ steps.docker_build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Validate Artifact Registry configuration
+        id: image
+        shell: bash
+        env:
+          REGISTRY_HOST: ${{ vars.REGISTRY_HOST }}
+          REGISTRY_PROJECT: ${{ vars.REGISTRY_PROJECT }}
+          REGISTRY_REPOSITORY: ${{ vars.REGISTRY_REPOSITORY }}
+        run: |
+          set -euo pipefail
+          [[ "$REGISTRY_HOST" =~ ^[a-z0-9-]+-docker\.pkg\.dev$ ]]
+          [[ "$REGISTRY_PROJECT" =~ ^[a-z][a-z0-9-]*$ ]]
+          [[ "$REGISTRY_REPOSITORY" =~ ^[a-z][a-z0-9._-]*$ ]]
+          test -f cmd/__APP__/Dockerfile
+          test -f .dockerignore
+          printf 'repository=%s/%s/%s/__APP__-staging\n' "$REGISTRY_HOST" "$REGISTRY_PROJECT" "$REGISTRY_REPOSITORY" >> "$GITHUB_OUTPUT"
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        id: auth
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+          token_format: access_token
+          create_credentials_file: false
+          export_environment_variables: false
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ${{ vars.REGISTRY_HOST }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        id: docker_build
+        with:
+          context: .
+          file: ./cmd/__APP__/Dockerfile
+          platforms: linux/amd64
+          provenance: false
+          pull: true
+          push: true
+          tags: ${{ steps.image.outputs.repository }}:${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+  deploy-example:
+    name: Deploy example application
+    needs: build-example
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: __APP__-staging
+    permissions: {}
+    steps:
+      - name: Deploy the published digest
+        uses: deploys-app/deploys-action@16080dc6692cfe7205515a95e8921317b66f4ef9 # v1
+        with:
+          project: ${{ vars.DEPLOY_PROJECT }}
+          location: ${{ vars.DEPLOY_LOCATION }}
+          name: ${{ vars.DEPLOY_NAME }}
+          image: ${{ needs.build-example.outputs.image }}
+          type: WebService
+          port: ${{ vars.DEPLOY_PORT }}
+        env:
+          DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+          DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
+
+  # Optional second target: off unless this repository variable is exactly true.
+  # Remove this job when the requirements call for only one deployment.
+  deploy-example-secondary:
+    name: Deploy the same image to an optional second target
+    if: vars.ENABLE_SECONDARY_DEPLOYMENT == 'true'
+    needs: build-example
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: __APP__-staging-secondary
+    permissions: {}
+    steps:
+      - name: Deploy the same published digest
+        uses: deploys-app/deploys-action@16080dc6692cfe7205515a95e8921317b66f4ef9 # v1
+        with:
+          project: ${{ vars.DEPLOY_PROJECT }}
+          location: ${{ vars.DEPLOY_LOCATION }}
+          name: ${{ vars.DEPLOY_NAME }}
+          image: ${{ needs.build-example.outputs.image }}
+          type: WebService
+          port: ${{ vars.DEPLOY_PORT }}
+        env:
+          DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+          DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}

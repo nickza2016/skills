@@ -32,7 +32,7 @@ Use the XYZ structure and stack to build a repository capable of hosting multipl
 | Evidence, snapshot versions, or adaptation boundaries | [Source baseline](references/source-baseline.md) |
 | Completion checks or evaluating this skill | [Acceptance scenarios](references/acceptance-scenarios.md) |
 
-When Dockerfiles, GitHub Actions, or Nortezh delivery are requested, also use [deploying-go-to-nortezh](../deploying-go-to-nortezh/SKILL.md). Do not add active deployment workflows to an ordinary scaffolding task without that scope.
+When Dockerfiles, GitHub Actions, or deployment are requested, also use [deploying-go-to-nortezh](../deploying-go-to-nortezh/SKILL.md). Its new-deployment default is the supplied-file Artifact Registry/Deploys.app pattern; GHCR/Nortezh remains an explicit alternative. Do not add active deployment workflows to an ordinary scaffolding task without that scope.
 
 ## Workflow
 
