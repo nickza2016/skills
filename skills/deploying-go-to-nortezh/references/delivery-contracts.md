@@ -31,22 +31,13 @@ The `.dockerignore` template deliberately excludes secrets and agent state, not 
 
 ## GitHub environment configuration
 
-The reusable workflow selects environment `<app>-<stage>`, where stage is staging or production. This permits different target names and credentials for each application/environment without hardcoding the reference system.
+The workflow is [the exact Nortezh template](../assets/nortezh/workflow-staging.yaml.tmpl). `project`, `location`, and `name` are literal values asked from the user; no `vars.*` are used.
 
 | Name | Kind | Meaning |
 |---|---|---|
-| `NTZ_PROJECT` | Environment variable | Approved Nortezh project identifier |
-| `NTZ_LOCATION` | Environment variable | Approved location identifier |
-| `NTZ_DEPLOYMENT` | Environment variable | Exact existing deployment name, or explicitly approved creation target |
-| `NTZ_TYPE` | Environment variable | `WebService` or `Worker` |
-| `NTZ_PORT` | Environment variable | Required numeric listening port for WebService; must match app/platform config |
-| `NTZ_SA_EMAIL` | Environment secret | Nortezh service-account email, supplied only to the deployment action |
-| `NTZ_SA_KEY` | Environment secret | Nortezh service-account key, supplied only to the deployment action |
-| `GITHUB_TOKEN` | Built-in job token | GHCR publication, restricted to the publishing job |
-
-The workflow does not pass environment secrets through caller `secrets: inherit`; the deployment job obtains its selected environment's secrets. Configure/protect those environments deliberately. Do not assume typing an environment name automatically creates the intended approval rules.
-
-Nortezh receives `SA_AUTH_EMAIL` and `SA_AUTH_KEY`, not the GitHub secret names themselves. The action contract accepts `action`, `project`, `location`, `name`, `image`, optional `port`, and `type`. The WebService step supplies an explicit port; the Worker step omits it. Do not rely on the action's default port 80 when the process listens elsewhere.
+| `NTZ_SVA_EMAIL` | Repository secret | Nortezh service-account email, passed as `SA_AUTH_EMAIL` |
+| `NTZ_SVA_KEY` | Repository secret | Nortezh service-account key, passed as `SA_AUTH_KEY` |
+| `GITHUB_TOKEN` | Built-in job token | GHCR publication |
 
 Configure image pull access on Nortezh separately for private GHCR packages. A successful registry login/push in GitHub does not give Nortezh's runtime the same credentials.
 
