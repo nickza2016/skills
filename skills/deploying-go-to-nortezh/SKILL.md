@@ -13,7 +13,7 @@ Use the [supplied-file deployment pattern](references/deploys-pattern.md) by def
 
 Read [the pattern and configuration contract](references/deploys-pattern.md) before preparing a new deployment. Render [the Dockerfile](assets/deploys/Dockerfile.tmpl) to `cmd/<app>/Dockerfile` and [the staging workflow](assets/deploys/workflow-staging.yaml.tmpl) to `.github/workflows/<app>-staging.yaml`; merge [context exclusions](assets/dockerignore.tmpl). Replace `__APP__`/`__GO_VERSION__` with confirmed target values. Keep source verification, build-job digest output, and downstream deploy dependencies. Enable the optional second target only when required. Do not infer a production release policy from a staging example.
 
-Apply the scope/privacy/validation boundaries below to both variants. The remaining materialization steps and `NTZ_*` configuration are for the **GHCR/Nortezh alternative only**; do not mix them into the default Deploys.app workflow.
+Apply the scope/privacy/validation boundaries below to both variants. The remaining materialization steps and Nortezh workflow are for the **GHCR/Nortezh alternative only**; do not mix them into the default Deploys.app workflow.
 
 ## Boundaries and inputs
 
@@ -40,15 +40,11 @@ For an HTTP application requiring generated Swagger, add the pinned generation s
 
 Copy required non-secret runtime assets explicitly and document their paths. The template has no business assets by default. Do not copy environment files, credentials, test databases, or the whole source tree into the runtime stage.
 
-### 3. Materialize CI and environment callers
+### 3. Write the Nortezh workflow (exact pattern)
 
-- Copy [the reusable pipeline](assets/workflow-deliver.yml.tmpl) to `.github/workflows/deliver-go.yml`.
-- Render [the staging caller](assets/workflow-staging.yml.tmpl) and [production caller](assets/workflow-production.yml.tmpl) per selected application, replacing `__APP__`. Do not generate callers for nonexistent apps.
-- Staging supports manual dispatch and main-branch path-filtered changes. Production follows published releases. Adapt triggers only to the user's requested release policy.
-- Expand path filters for shared code, module files, migrations, Docker context rules, workflow definitions, and actual runtime assets. Do not inherit a source filter that misses `schema` changes.
-- Configure the `<app>-staging` and `<app>-production` GitHub environments and their required Nortezh variables/secrets before enabling live runs. Protect production with the intended approval policy.
+Before writing, ask the user only for the Nortezh `project`, `location`, and `name`.
 
-The reusable pipeline tests before publication, uses per-app/environment build caches, publishes a run-specific commit tag, records the digest, then deploys the exact published tag. It uses no PR-with-secrets trigger and does not infer registry pull access for Nortezh.
+Render [the Nortezh workflow](assets/nortezh/workflow-staging.yaml.tmpl) to `.github/workflows/deploy-<app>-staging.yaml`, replacing `__APP__`, `__NTZ_PROJECT__`, `__NTZ_LOCATION__`, and `__NTZ_NAME__` with literal values. Change nothing else: no `vars.*`, no extra jobs, steps, inputs, or reusable workflows. Secrets stay `NTZ_SVA_EMAIL` and `NTZ_SVA_KEY`.
 
 ### 4. Validate without overstating evidence
 
