@@ -12,7 +12,13 @@
 
 Default to database/sql + lib/pq. Inject a DB with `pgctx.Middleware(db)` for HTTP requests or `pgctx.NewContext(ctx, db)` for jobs/tests, and propagate context through every operation.
 
-Use `pgctx.QueryRow(ctx, query, args...).Scan(...)`, `pgctx.Exec(ctx, query, args...)`, or pgstmt as appropriate. Bind values; allowlist dynamic identifiers rather than treating them as bindable values. Close rows and check iteration errors, or use the verified `pgstmt.IterWith` API.
+Use only pgctx and pgstmt for SQL (examples in [writing functions](writing-functions.md)):
+
+- pgstmt (`Select`/`Insert`/`Update` with `QueryRowWith`, `ExecWith`, `IterWith`) for queries with filters, joins, or optional fields.
+- `pgctx.QueryRow`, `pgctx.Exec`, `pgctx.Iter` for short fixed SQL with `$n` bind values.
+- `pgctx.RunInTx` for transactions; `pgsql.IsUniqueViolation` for unique-constraint errors.
+
+If a query cannot be expressed with pgctx/pgstmt (CTEs, window functions, bulk `COPY`, another driver/ORM), stop and ask the user before writing it. Bind values; never concatenate client input into SQL.
 
 Map `sql.ErrNoRows` with `errors.Is` and driver errors such as `*pq.Error` with `errors.As` into stable application errors. For example, PostgreSQL `23505` is a unique violation, not an arbitrary internal failure.
 
@@ -20,7 +26,7 @@ Configure the pool explicitly. Source starters are max open 10, idle 5, and life
 
 Use bounded `PingContext` before declaring readiness. `sql.Open` alone does not prove connectivity. Keep DSNs in environment/secret configuration and never log credential-bearing URLs.
 
-For list queries, select counted or count-free pagination per endpoint. Use bounded `limit + 1` fetching for next-page detection where totals are unnecessary; do not introduce an unconditional full `COUNT(*)`. Apply allowlisted, deterministic sorting before the page boundary. See [API contracts](api-contracts.md) for cursor and offset constraints.
+Every list query is paginated with `pkg/api.Paginate` and sorted with `pkg/rest.Sort`; see [pagination and sorting](pagination-and-sorting.md).
 
 ## Transactions
 
@@ -105,7 +111,7 @@ Test at least:
 - Fresh migration, rerun idempotence, applied checksum mismatch/missing files, invalid/gapped names, file transaction failure, and seed separation.
 - CRUD success/not-found/unique conflicts, validation/auth/permission failures, and atomic rollback of coupled writes.
 - Mounted HTTP envelopes/statuses, including validation 400 versus typed domain-error 200, separately from direct function tests.
-- Required list sorting, stable tie-breakers, and each endpoint's selected pagination mode. Verify count-free endpoints use no full count query and return the correct next-page flag without leaking the extra row.
+- List sorting (default, valid, invalid column/order) and pagination (empty, one page, several pages, `next` and `totalCount` match the filter).
 - Independent databases, partial-setup cleanup, and unit-only selections that do not start PostgreSQL.
 - UTF-8 encoding and non-ASCII round trips where supported.
 - Queue enqueue rollback with the business transaction when River is selected. Do not contact real providers without explicit test opt-in.

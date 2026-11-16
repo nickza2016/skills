@@ -6,6 +6,8 @@ Apply this reference to each application that exposes an HTTP API, not to every 
 
 Register method + path with httpmux and adapt typed functions through `arpc.Manager`. Use a shape such as `func Get(ctx context.Context, p *GetParams) (*GetResult, error)`, with JSON tags and `Valid() error` on request types.
 
+Follow [writing functions](writing-functions.md): each function's params, `Valid()`, and result types sit directly above it in the same file; no new files unless the code is reused (then `pkg/`).
+
 Use `validator.New()`, `v.Must(condition, "message")`, and `v.Error()`. Explicit validation in a domain function can support direct invocation; arpc v2.2.0 also validates requests before invocation by default. Keep validation idempotent and free of database writes or other side effects.
 
 Register endpoints with `mux.Handle("POST /item.get", am.Handler(item.Get))`. Use `POST /<resource>.<action>` as the RPC baseline. This is not JSON-RPC 2.0: the request body contains parameters directly, not a `jsonrpc`/`method`/`id` envelope.
@@ -49,23 +51,10 @@ Implement `<app>/rest.go` and wire `am.WrapError`, `am.ErrorEncoder`, `am.OnOK`,
 
 ## Lists, pagination, and updates
 
-The source contains two incompatible pagination contracts:
+Every list uses `pkg/api.Paginate` and `pkg/rest.Sort`, following [pagination and sorting](pagination-and-sorting.md).
 
-| Source-local wrapper | Input | Output |
-|---|---|---|
-| `pkg/rest.Paginate` | `page`, `limit` | `page`, `limit`, `totalItems`, `totalPages`, `firstPage`, `lastPage` |
-| `pkg/api.Paginate` | `page`, `perPage` | `page`, `perPage`, `next`, optional `totalCount` after `CountTotal` |
-
-Select pagination per endpoint and workload using [pagination and sorting](pagination-and-sorting.md). Neither source wrapper is mandatory for every new list. Counted page-number navigation is appropriate when exact totals are actually required; count-free next-page navigation is appropriate when totals are unnecessary or expensive. Preserve a supplied target-contract example rather than choosing incompatible keys or metadata automatically.
-
-- Define whether `paginate` is required or has defaults. Reject invalid/nonpositive values, bound page size, and guard overflow and division by zero.
-- For count-free lists, fetch at most limit + 1 rows, return at most limit, expose the chosen next-page flag, and omit unavailable totals. Do not add a full COUNT query or manufacture totalItems/totalPages.
-- Choose a workload-appropriate cap and document it. The source's `pkg/api` has default 50/cap 1000; `pkg/rest` does not establish those defaults or that cap.
-- Return `items: []` when the contract promises an array. Define actual nullability rather than banning nil slices throughout Go code.
-- Expose allowlisted sort fields/directions for browsable lists unless an explicitly documented fixed domain order forbids selectable sorting. In either case, use a deterministic tie-breaker when applicable and apply ordering in SQL before pagination, not in memory after fetching a page.
-- Test default/alternate/invalid sort and pagination boundaries. Never concatenate unchecked client identifiers or sort directions into SQL.
-- Distinguish omitted, null, empty, false, and zero for updates. Use pointers/custom types when needed; zero values do not automatically mean "not supplied."
-- Use pgstmt for suitable dynamic filters/updates or readable parameterized SQL. Do not generate arbitrary column maps from client input.
+- Distinguish omitted, null, empty, false, and zero for updates with pointer fields.
+- Use pgstmt for filters/updates and pgctx for fixed SQL only. Do not generate arbitrary column maps from client input.
 
 ## Specifications and integration handoff
 

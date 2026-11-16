@@ -27,7 +27,7 @@ This snapshot does not select a production PostgreSQL server version. Do not inf
 |---|---|---|
 | DB integration tests | `github.com/fergusstrange/embedded-postgres` | `v1.34.0`; source test server `15.13.0` |
 | Test assertions | `github.com/stretchr/testify` | `v1.11.1`; retain `testing`/`httptest` as the foundation |
-| Movable pagination variant | `github.com/acoshift/paginate` | `v1.1.2`; only for the selected `page/perPage` wrapper |
+| Movable pagination variant | `github.com/acoshift/paginate` | `v1.1.2`; required by `pkg/api.Paginate` for every list |
 | UUIDs | `github.com/google/uuid` | `v1.6.0` |
 | Exact decimal amounts | `github.com/shopspring/decimal` | `v1.4.0`; avoid float arithmetic for exact monetary amounts |
 | Password hashing | `github.com/moonrhythm/passwordtool` | `v1.4.0`; verify its API and the target security policy |

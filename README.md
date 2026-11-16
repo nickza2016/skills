@@ -16,7 +16,7 @@ Portable Agent Skills for working in the XYZ style. Keep personal defaults separ
 
 The Go baseline is **one repository, one Go module, and as many application binaries as the requirements need**. It does not prescribe application names or require a user/admin pair. An application can be an API, worker, scheduler, or another backend executable.
 
-Browsable lists support validated sorting. Pagination is selected per workload: exact totals are optional, and large lists can use count-free next-page navigation rather than an unconditional COUNT query.
+Go code uses only pgctx/pgstmt for SQL, keeps each function's params/result types above it in the same file, and paginates every list with `pkg/api.Paginate` and `pkg/rest.Sort`.
 
 This bundle provides instructions, references, and a local agent-configuration helper, not an executable backend application generator. The consuming AI must implement and test the target application.
 

@@ -1,0 +1,149 @@
+package api
+
+import (
+	"encoding/json"
+
+	"github.com/acoshift/paginate"
+)
+
+const (
+	DefaultPerPage = 50
+	MaxPerPage     = 1000
+)
+
+type Paginate struct {
+	p                *paginate.MovablePaginate
+	totalCount       int64
+	isShowTotalCount bool
+}
+
+func NewPaginate(page int64, perPage int64) Paginate {
+	if perPage <= 0 {
+		perPage = DefaultPerPage
+	}
+	if perPage > MaxPerPage {
+		perPage = MaxPerPage
+	}
+	return Paginate{
+		p: paginate.NewMovable(page, perPage, 0),
+	}
+}
+
+func (p *Paginate) init() {
+	if p.p == nil {
+		p.p = paginate.NewMovable(1, DefaultPerPage, 0)
+	}
+}
+
+func (p *Paginate) MarshalJSON() ([]byte, error) {
+	p.init()
+	base := struct {
+		Page    int64 `json:"page"`
+		PerPage int64 `json:"perPage"`
+		Next    bool  `json:"next"`
+	}{
+		Page:    p.p.Page(),
+		PerPage: p.p.PerPage(),
+		Next:    p.p.CanNext(),
+	}
+
+	// If isShowTotalCount is true, include TotalCount in the JSON
+	if p.isShowTotalCount {
+		withTotalCount := struct {
+			Page       int64 `json:"page"`
+			PerPage    int64 `json:"perPage"`
+			Next       bool  `json:"next"`
+			TotalCount int64 `json:"totalCount"`
+		}{
+			Page:       p.p.Page(),
+			PerPage:    p.p.PerPage(),
+			Next:       p.p.CanNext(),
+			TotalCount: p.totalCount,
+		}
+		return json.Marshal(withTotalCount)
+	}
+
+	return json.Marshal(base)
+}
+
+func (p *Paginate) Count(f func() (int64, error)) error {
+	p.init()
+	cnt, err := f()
+	if err != nil {
+		return err
+	}
+	p.p.SetCount(cnt)
+	return nil
+}
+
+func (p *Paginate) UnmarshalJSON(b []byte) error {
+	var s struct {
+		Page    int64 `json:"page"`
+		PerPage int64 `json:"perPage"`
+	}
+	err := json.Unmarshal(b, &s)
+	if err != nil {
+		return err
+	}
+	if s.PerPage <= 0 {
+		s.PerPage = DefaultPerPage
+	}
+	if s.PerPage > MaxPerPage {
+		s.PerPage = MaxPerPage
+	}
+	*p = Paginate{
+		p: paginate.NewMovable(s.Page, s.PerPage, 0),
+	}
+	return nil
+}
+
+func (p *Paginate) CountOffset() int64 {
+	p.init()
+	return p.p.CountOffset()
+}
+
+func (p *Paginate) CountLimit() int64 {
+	p.init()
+	return p.p.CountLimit()
+}
+
+func (p *Paginate) Offset() int64 {
+	p.init()
+	return p.p.Offset()
+}
+
+func (p *Paginate) Limit() int64 {
+	p.init()
+	return p.p.Limit()
+}
+
+func (p *Paginate) Page() int64 {
+	p.init()
+	return p.p.Page()
+}
+
+func (p *Paginate) PerPage() int64 {
+	p.init()
+	return p.p.PerPage()
+}
+
+func (p *Paginate) TotalCount() int64 {
+	p.init()
+	return p.totalCount
+}
+
+func (p *Paginate) SetCountTotal(t int64) *Paginate {
+	p.totalCount = t
+	return p
+}
+
+func (p *Paginate) CountTotal(f func() (int64, error)) error {
+	p.init()
+	cnt, err := f()
+	if err != nil {
+		return err
+	}
+	p.isShowTotalCount = true
+	p.SetCountTotal(cnt)
+	return nil
+}
