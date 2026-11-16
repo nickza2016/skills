@@ -30,7 +30,8 @@ Use the XYZ structure and stack to build a repository capable of hosting multipl
 | HTTP endpoints, validation, auth, errors, or lists | [API contracts](references/api-contracts.md) |
 | Every browsable list or pagination change | [Pagination and sorting](references/pagination-and-sorting.md) |
 | SQL, migrations, transactions, or DB fixtures | [Database and testing](references/database-and-testing.md) |
-| Application lifecycle, jobs, scheduling, Swagger, or containers | [Runtime and delivery](references/runtime-and-delivery.md) |
+| Application lifecycle, jobs, scheduling, or containers | [Runtime and delivery](references/runtime-and-delivery.md) |
+| API documentation | [documenting-apis](../documenting-apis/SKILL.md) |
 | Evidence, snapshot versions, or adaptation boundaries | [Source baseline](references/source-baseline.md) |
 | Completion checks or evaluating this skill | [Acceptance scenarios](references/acceptance-scenarios.md) |
 

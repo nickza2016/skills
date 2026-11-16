@@ -12,18 +12,9 @@ The default Dockerfile builds on `$BUILDPLATFORM`, cross-compiles using `$TARGET
 
 Pin selected base images by version and preferably verified digest under the project's update policy. The template's base tags are not a claim of immutable bytes. Do not disable CA verification or copy a shell into distroless simply to run an unsuitable health-check command.
 
-## Swagger and assets
+## Assets
 
-When the application imports generated docs, generate them before compiling. Add a native-builder step such as the following after source copy, replacing placeholders and verifying the selected instance name:
-
-```dockerfile
-RUN go install github.com/swaggo/swag/cmd/swag@v1.16.6
-RUN swag init -g cmd/__APP__/main.go -o __APP__/docs --instanceName __SWAGGER_INSTANCE__ --parseDependency --parseInternal
-```
-
-Use appropriate excludes for other applications if parsing collides. Match the generated instance with the application's `swag.ReadDoc` lookup. Do not apply a source-specific default instance to all applications.
-
-If generated docs are not committed, add the same pinned generation command before `go build` in the verification job as well. Generating files only inside Docker cannot satisfy an earlier CI compile that imports them.
+No swag or docs generation in the image. API docs are a separate static site ([documenting-apis](../../documenting-apis/SKILL.md)).
 
 Explicitly copy only required runtime assets into known `/app/...` paths, and include their source paths in staging triggers. Validate readability as UID 65532 and relative-path behavior under `WORKDIR /app`. Some persistent mounts need ownership configuration; non-root containers do not automatically fix filesystem permissions.
 

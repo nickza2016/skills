@@ -19,8 +19,6 @@ Model the project as **one repository and one Go module containing one or more a
   <app-a>/                    # application-owned packages when needed
     handler.go                 # Mount/routes for an HTTP application
     rest.go                    # HTTP/RPC error adapters
-    swagger.go                 # optional specification serving
-    docs/                      # generated API specification
     <domain>/
       <domain>.go              # typed operations, inputs/results, validation
       <domain>_test.go
@@ -43,6 +41,7 @@ Model the project as **one repository and one Go module containing one or more a
     schema.go                  # embed + migration runner for a shared DB
     01.sql                     # this project's own schema
     seed.sql                   # optional explicit test/development seed
+  apidocs/                     # OpenAPI 3.1 docs site (documenting-apis skill)
   docs/                        # integration and operational documentation
   cmd/<app>/Dockerfile         # default delivery pattern; only when requested
 ```

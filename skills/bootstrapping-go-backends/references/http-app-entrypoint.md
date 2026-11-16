@@ -17,19 +17,9 @@ Write every HTTP application's `<app>/handler.go` and `cmd/<app>/main.go` exactl
 ```go
 package myapi
 
-//go:generate swag init -g handler.go -d ./ --output docs --parseDependency --parseInternal
-
-// @title My API
-// @version 1.0
-// @BasePath /
-// @securityDefinitions.apikey BearerAuth
-// @in header
-// @name Authorization
-
 import (
 	"context"
 	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/acoshift/arpc/v2"
@@ -42,8 +32,6 @@ import (
 
 func Mount(mux *httpmux.Mux, am *arpc.Manager) {
 	// public
-	mux.Handle("GET /swagger/doc.json", http.HandlerFunc(SwaggerJSONHandler))
-	mux.Handle("GET /swagger/", http.HandlerFunc(SwaggerUIHandler))
 	mux.Handle("POST /auth.signIn", am.Handler(myapiauth.SignIn))
 
 	signedIn := mux.Group("/", am.Middleware(authMiddleware))
@@ -181,4 +169,4 @@ func run() error {
 
 Render [recovery.go](../assets/pkg/rest/recovery.go.tmpl) into `pkg/rest/` and [request.go](../assets/pkg/api/request.go.tmpl) into `pkg/api/`. Handlers read the client IP and user agent with `api.RequestInfoFromContext(ctx)`.
 
-`WrapError`, `OnOK`, `OnError` live in `myapi/rest.go`; `SwaggerJSONHandler`/`SwaggerUIHandler` in `myapi/swagger.go`. Add other clients (storage, observability) the same way: create in `run()`, `defer Close()`, then register their middleware with `s.UseFunc`/`s.Use`.
+`WrapError`, `OnOK`, `OnError` live in `myapi/rest.go`. API docs are a separate static site, not served by the app; see [documenting-apis](../../documenting-apis/SKILL.md). Add other clients (storage, observability) the same way: create in `run()`, `defer Close()`, then register their middleware with `s.UseFunc`/`s.Use`.

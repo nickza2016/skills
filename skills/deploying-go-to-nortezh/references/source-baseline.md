@@ -35,7 +35,7 @@ Resolved public tag refs on 2026-10-22. These pins establish which code a templa
 - Explicit schema/context/workflow path filters and target-specific asset additions.
 - Run-specific full-commit tags plus recorded digest rather than short-SHA-only tags.
 - Job-scoped token permissions, environment-protected deployment credentials, input checks, and explicit WebService ports.
-- Non-root distroless runtime, no unnecessary QEMU for native Linux amd64 builds, pinned actions and Swagger generator, and an explicit `.dockerignore`.
+- Non-root distroless runtime, no unnecessary QEMU for native Linux amd64 builds, pinned actions, no in-image docs generation, and an explicit `.dockerignore`.
 
 ## Verification boundaries
 

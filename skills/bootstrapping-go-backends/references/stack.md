@@ -36,7 +36,7 @@ This snapshot does not select a production PostgreSQL server version. Do not inf
 | Scheduling | `github.com/robfig/cron/v3` | `v3.0.1` |
 | WebSocket | `github.com/gorilla/websocket` | `v1.5.3` |
 | OAuth | `golang.org/x/oauth2` | `v0.24.0` |
-| Swagger generation | `github.com/swaggo/swag` | `v1.16.6`; pin the generator consistently |
+| API documentation | hand-written OpenAPI 3.1 | no swag; see `documenting-apis` |
 | Collection helpers | `github.com/samber/lo` | `v1.50.0`; unnecessary for simple loops |
 
 ## Implement local adapters

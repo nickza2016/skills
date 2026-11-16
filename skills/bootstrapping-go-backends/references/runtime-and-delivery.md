@@ -41,11 +41,7 @@ Choose an explicit timezone for local-time schedules. Use timeouts/cancellation 
 
 ## Specifications and local commands
 
-Pin swag `v1.16.6` consistently with the dependency snapshot; do not inherit the source container's unpinned `@latest` installation.
-
-Generate specifications only for applications exposing an API, into their own docs packages. Keep generator entrypoint, output directory, registered instance name, and `swag.ReadDoc` lookup consistent for each application. Do not reuse an instance named after an unrelated source application.
-
-The source's generation commands reside in its per-application Dockerfiles, not a Makefile generation target. Add a reproducible command/target appropriate to the new application names rather than copying its paths. If Swagger UI relies on a CDN, document the network requirement or bundle assets for offline use.
+Do not use swag or generate specifications during the build. API docs are hand-written OpenAPI 3.1 in `apidocs/`, published as a separate static site; see [documenting-apis](../../documenting-apis/SKILL.md).
 
 Document real commands for the created applications. These are templates; replace `<app>` with an actual selected name:
 

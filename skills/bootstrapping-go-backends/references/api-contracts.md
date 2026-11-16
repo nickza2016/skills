@@ -58,10 +58,10 @@ Every list uses `pkg/api.Paginate` and `pkg/rest.Sort`, following [pagination an
 
 ## Specifications and integration handoff
 
-Inspect validation, serialization, route registration, and permission checks before documenting behavior. Generate a specification per exposed API application; a worker does not need a Swagger document merely for symmetry.
+Write API documentation with [documenting-apis](../../documenting-apis/SKILL.md) (hand-written OpenAPI 3.1, no swag). Document each exposed API application; a worker needs no API document.
 
 - Document method/path, auth, permissions, envelopes, nullability, optionality, defaults, and enums. Preserve accurate `required`, descriptions, and examples when changing schemas.
-- Align Swagger status declarations with runtime encoders; do not copy contradictory source `401` annotations over HTTP-200 typed errors.
+- Match documented statuses to the runtime encoder: typed errors are HTTP 200 with `ok: false`, not 401.
 - Follow the requested or repository-established documentation language. Source-specific Thai FE handoff rules do not make every new project's output Thai; this skill bundle itself remains English.
 - For integration handoffs, include request/response JSON and key-reference tables covering nested example fields, relevant targeting/timing/error semantics, and a checklist.
 - For multiple screens, include endpoint-to-screen and permission-to-action mappings, navigation, and loading/empty/error behavior as backend integration guidance, not permission to implement the frontend.
