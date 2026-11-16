@@ -78,7 +78,7 @@ One application may have several responsibilities if that is the requested deplo
 
 Keep one root `go.mod` by default. Separate binaries are not separate modules. Introduce nested modules or `go.work` only when explicitly justified and authorized.
 
-Pair source and primary tests, such as `item.go` and `item_test.go`. Keep feature setup close to its tests; use external test packages when useful or needed to avoid import cycles.
+Every source file with functions has its test file beside it in the same directory: `item.go` → `item_test.go`. That test file tests only the functions in `item.go`. Do not put tests for several files in one shared test file, and do not move tests to a separate `tests/` directory. Use an external test package (`package item_test`) only when needed to avoid import cycles.
 
 Separate package lifecycle from feature helpers: one `testmain_test.go` may call `tu.Run(m)` to stop a package's embedded DB server before exit. Put reusable DB infrastructure in `pkg/tu`, not a growing central feature-test helper file.
 
