@@ -4,7 +4,7 @@
 
 Implement each `cmd/<app>/main.go` according to that application's responsibility. A multi-application module does not require identical startup logic for every binary.
 
-For an HTTP application:
+For an HTTP application (code shape in [HTTP entrypoint](http-app-entrypoint.md)):
 
 1. Load development dotenv when appropriate and read typed configuration with configfile. Do not print secrets.
 2. Initialize logging and optional observability without requiring cloud credentials for ordinary local work.

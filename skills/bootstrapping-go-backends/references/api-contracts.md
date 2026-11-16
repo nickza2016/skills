@@ -12,7 +12,7 @@ Use `validator.New()`, `v.Must(condition, "message")`, and `v.Error()`. Explicit
 
 Register endpoints with `mux.Handle("POST /item.get", am.Handler(item.Get))`. Use `POST /<resource>.<action>` as the RPC baseline. This is not JSON-RPC 2.0: the request body contains parameters directly, not a `jsonrpc`/`method`/`id` envelope.
 
-Place `Mount(mux *httpmux.Mux, am *arpc.Manager)` in `<app>/handler.go`. Separate public routes from protected groups, for example `mux.Group("/", am.Middleware(apiMiddleware))`. Determine application boundaries from requirements rather than assuming two audiences or fixed application names.
+Place `Mount(mux *httpmux.Mux, am *arpc.Manager)` in `<app>/handler.go`, following [HTTP entrypoint](http-app-entrypoint.md): public routes on `mux`, then one named group per access level. Determine application boundaries from requirements rather than assuming two audiences or fixed application names.
 
 ## Identity and authorization
 
