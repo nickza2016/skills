@@ -6,6 +6,7 @@ Rules for every feature function. The `item` resource below is illustrative only
 
 - **One file per feature.** Put each function's `XxxParams`, `Valid()`, and `XxxResult`/`XxxItem` types directly above that function. Do not split params/results into other files, and do not create a new file unless the code is reused; reused code goes in `pkg/`.
 - **No single-use helpers or methods.** Do not create a helper function, method, or intermediate record struct (for example `row.view()`, `row.listItem()`, `scanX()`) that has only one caller; write that code inside the function. Extract only when two or more functions call it. The one exception is `run()` in `main.go` (see [HTTP entrypoint](http-app-entrypoint.md)), which exists so deferred cleanup runs. Prefer mapping in SQL (`coalesce(x, '{}')`, `x IS NOT NULL AS flag`) and scanning straight into the result type over converting through extra structs.
+- **Tests beside the file.** `item.go` gets `item_test.go` in the same directory, testing only the functions in `item.go` (for example `TestCreate`, `TestList`). No shared or separate test directories.
 - **Signature:** `func Xxx(ctx context.Context, p *XxxParams) (*XxxResult, error)`, or `error` only when there is no result.
 - **Order inside the function:** authorize → `p.Valid()` → query/transaction → result.
 - **Validation:** `validator.New()`, `v.Must(cond, "field is required")`, `return v.Error()`. Messages name the JSON field.
