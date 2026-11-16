@@ -1,0 +1,62 @@
+openapi: 3.1.0
+info:
+  title: __TITLE__
+  version: __MILESTONE__
+  description: |
+    RPC-style API: every endpoint is `POST /<resource>.<action>` with a JSON body.
+    Success and typed errors return HTTP 200; check `ok`. Validation errors return HTTP 400.
+servers:
+  - url: __SERVER_URL__
+security:
+  - BearerAuth: []
+tags:
+  - name: __MILESTONE__
+    description: Changes in __MILESTONE__
+paths: {}
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Error:
+      type: object
+      required: [ok, error]
+      properties:
+        ok: { const: false }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            items:
+              type: array
+              items: { type: string }
+    PaginateParams:
+      type: object
+      properties:
+        page: { type: integer, minimum: 1, default: 1 }
+        perPage: { type: integer, minimum: 1, maximum: 1000, default: 50 }
+    Paginate:
+      type: object
+      required: [page, perPage, next]
+      properties:
+        page: { type: integer }
+        perPage: { type: integer }
+        next: { type: boolean, description: More items exist after this page. }
+        totalCount: { type: integer, description: Present only on lists that count all matching items. }
+    Sort:
+      type: object
+      properties:
+        column: { type: string }
+        order: { type: string, enum: [asc, desc], default: asc }
+  responses:
+    Validation:
+      description: Invalid request body.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            validation:
+              value: { ok: false, error: { code: VALIDATION, message: validation error, items: ["name is required"] } }

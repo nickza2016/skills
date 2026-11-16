@@ -15,7 +15,7 @@ Rules for every feature function. The `item` resource below is illustrative only
 - **Errors:** declare typed errors at the top of the file with `arpc.NewErrorCode`. Map `sql.ErrNoRows` (with `errors.Is`) to not-found, unique violations (`pgsql.IsUniqueViolation`) to a conflict error, and `RowsAffected() == 0` to not-found. Return every other error unchanged; never hide it as not-found.
 - **Updates:** pointer fields for optional values; set only fields that are non-nil.
 - **Big numbers:** do not mutate inputs; use `new(big.Int).Add(a, b)`.
-- **Swagger:** every exposed function has `@Summary`, `@Tags`, `@Param`, `@Success`, `@Failure`, `@Security`, `@Router` comments.
+- **API docs:** no swag/Swagger comments. Document every exposed function in OpenAPI with [documenting-apis](../../documenting-apis/SKILL.md).
 
 ## Lists and `CountTotal`
 
@@ -51,16 +51,6 @@ type CreateResult struct {
 }
 
 // Create creates an item.
-//
-// @Summary     Create item
-// @Tags        Item
-// @Accept      json
-// @Produce     json
-// @Param       request  body      CreateParams  true  "Item data"
-// @Success     200      {object}  CreateResult
-// @Failure     400      {object}  ErrorResponse
-// @Security    BearerAuth
-// @Router      /item.create [post]
 func Create(ctx context.Context, p *CreateParams) (*CreateResult, error) {
 	if err := iam.Authorize(ctx, permission.ItemCreate); err != nil {
 		return nil, err

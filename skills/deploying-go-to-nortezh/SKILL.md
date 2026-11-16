@@ -20,7 +20,7 @@ Apply the scope/privacy/validation boundaries below to both variants. The remain
 - Author all skill artifacts in English. Follow the target repository's instructions and current request before this baseline.
 - Treat pipeline preparation, image publication, and live deployment as separate permissions. Templates in this bundle are inert assets, not active workflows.
 - Inspect the target module, application roots, runtime assets, migrations, and existing workflows before replacing anything. Preserve dirty/unrelated work.
-- Establish application names, registry/deployment platform, architecture, Go version, runtime assets, Swagger needs, protected GitHub environments, target count, and `WebService`/`Worker` responsibilities.
+- Establish application names, registry/deployment platform, architecture, Go version, runtime assets, protected GitHub environments, target count, and `WebService`/`Worker` responsibilities.
 - Obtain non-secret project/location/deployment identifiers through the approved configuration channel. Reference secret names, never ask for key values in chat or commit them.
 - For the default, use [Deploys.app configuration and action evidence](references/deploys-pattern.md). For explicit GHCR/Nortezh, read [delivery contracts](references/delivery-contracts.md) and [source baseline](references/source-baseline.md). Never assume credentials or identifiers transfer between these platforms.
 
@@ -36,7 +36,7 @@ Create `build/<app>/Dockerfile` from [the base template](assets/Dockerfile.tmpl)
 
 Replace `__APP__` and `__GO_VERSION__` with validated target values. Use the selected module-compatible Go version, not a universal fixed toolchain. The template assumes Linux and CGO-free dependencies; adapt deliberately if those assumptions are false.
 
-For an HTTP application requiring generated Swagger, add the pinned generation step described in delivery contracts before `go build`, using that application's output/instance name. Do not add Swagger to workers or copy the source's unpinned generator.
+Do not add swag or other docs generation to the image; API docs are a separate static site.
 
 Copy required non-secret runtime assets explicitly and document their paths. The template has no business assets by default. Do not copy environment files, credentials, test databases, or the whole source tree into the runtime stage.
 

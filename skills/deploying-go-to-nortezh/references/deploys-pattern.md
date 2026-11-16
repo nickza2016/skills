@@ -45,8 +45,8 @@ Use [the Dockerfile](../assets/deploys/Dockerfile.tmpl) and
 [staging workflow](../assets/deploys/workflow-staging.yaml.tmpl) with
 [context exclusions](../assets/dockerignore.tmpl). Replace every template token;
 derive the Go version from the target module/toolchain, not the source's version.
-Adapt CGO/architecture/runtime assets when needed. Add pinned Swagger generation
-to both verification and Docker build only if the target imports generated docs.
+Adapt CGO/architecture/runtime assets when needed. Do not add swag or docs
+generation; API docs are a separate static site.
 
 Create and protect the following GitHub environments **before** enabling runs:
 
