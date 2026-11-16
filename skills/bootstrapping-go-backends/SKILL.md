@@ -26,6 +26,7 @@ Use the XYZ structure and stack to build a repository capable of hosting multipl
 |---|---|
 | Every new project | [Stack](references/stack.md), [Architecture](references/architecture.md) |
 | Writing any feature function | [Writing functions](references/writing-functions.md) |
+| Writing `<app>/handler.go` or `cmd/<app>/main.go` | [HTTP entrypoint](references/http-app-entrypoint.md) |
 | HTTP endpoints, validation, auth, errors, or lists | [API contracts](references/api-contracts.md) |
 | Every browsable list or pagination change | [Pagination and sorting](references/pagination-and-sorting.md) |
 | SQL, migrations, transactions, or DB fixtures | [Database and testing](references/database-and-testing.md) |
@@ -67,6 +68,7 @@ Write Go functions following [writing functions](references/writing-functions.md
 
 - SQL uses only pgctx and pgstmt. If something needs more than they offer, ask the user first.
 - Each function's params/result types and `Valid()` sit directly above it in the same file. Do not create new files unless the code is reused; reused code goes in `pkg/`.
+- Write `handler.go` and `main.go` exactly like [HTTP entrypoint](references/http-app-entrypoint.md): named route groups, routes grouped by resource, `main` → `run()`.
 - Do not create a helper function or method that has only one caller; write it inside the function. Map values in SQL and scan straight into the result type.
 - Every list is paginated with `pkg/api.Paginate` and sorted with `pkg/rest.Sort`, rendered from [assets/pkg](assets/pkg/). Before using `CountTotal`, estimate the row count; skip it when the filter can match more than 100,000 rows. See [pagination and sorting](references/pagination-and-sorting.md).
 

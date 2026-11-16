@@ -1,0 +1,47 @@
+package api
+
+import (
+	"context"
+	"net"
+	"net/http"
+	"strings"
+)
+
+type ctxKeyRequestInfo struct{}
+
+// RequestInfo holds information about the request.
+// It is set once by RequestInfoMiddleware.
+type RequestInfo struct {
+	ClientIP  string
+	UserAgent string
+}
+
+func NewRequestInfoContext(ctx context.Context, info RequestInfo) context.Context {
+	return context.WithValue(ctx, ctxKeyRequestInfo{}, info)
+}
+
+func RequestInfoFromContext(ctx context.Context) RequestInfo {
+	v, _ := ctx.Value(ctxKeyRequestInfo{}).(RequestInfo)
+	return v
+}
+
+func RequestInfoMiddleware(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// The last X-Forwarded-For entry is the one appended by the proxy in front of
+		// the app; earlier entries are client-supplied and can be spoofed.
+		clientIP := ""
+		if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+			parts := strings.Split(xff, ",")
+			clientIP = strings.TrimSpace(parts[len(parts)-1])
+		}
+		if clientIP == "" {
+			clientIP, _, _ = net.SplitHostPort(r.RemoteAddr)
+		}
+
+		ctx := NewRequestInfoContext(r.Context(), RequestInfo{
+			ClientIP:  clientIP,
+			UserAgent: r.UserAgent(),
+		})
+		h.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
