@@ -32,7 +32,7 @@ Keep the application architecture simple: a modular application with shared doma
 
 ## Plan access, then indexes
 
-Map important use cases to representative query shapes: predicates, joins, ordering, result size, pagination, and latency/workload assumptions. Support validated sorting on browsable lists and select counted versus count-free pagination per workload.
+Map important use cases to representative query shapes: predicates, joins, ordering, result size, pagination, and latency/workload assumptions. Support validated sorting on browsable lists and paginate every list with `pkg/api.Paginate`.
 
 Choose indexes aligned with actual filtering/ordering/join patterns, including tenant scope and stable pagination tie-breakers. Explain write/storage costs, selectivity assumptions, and how a query plan or representative test would validate the choice. Do not claim an index guarantees performance without relevant evidence.
 

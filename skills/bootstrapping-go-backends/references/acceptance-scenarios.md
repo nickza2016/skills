@@ -42,19 +42,21 @@ Use these cases to evaluate skill behavior. A plan or dry-run is behavioral revi
 
 **Expect:** Validation 400/code VALIDATION; typed unauthorized 200/ok:false under the baseline; clients inspect envelopes. Verify no-result output and absence of raw DB diagnostics. Keep pagination fields consistent with the endpoint's selected mode.
 
-## 6. Count-free large list with sorting
+## 6. Paginated list with sorting
 
-**Prompt:** List a very large dataset without total counts, while supporting a requested allowlisted sort and next-page navigation.
+**Prompt:** Add a list endpoint with search and sort.
 
-**Expect:** Select a count-free mode, fetch at most limit + 1 matching rows, compute the chosen next-page flag, return at most limit rows, and omit unavailable totals rather than inventing zeros. Do not execute a full COUNT. Apply default/selected SQL sort with a stable unique tie-breaker before fetching. Use an appropriate indexed cursor when deep offsets are unsuitable; bind the cursor to the selected sort/filter context.
+**Expect:** `ListParams`/`ListItem`/`ListResult` above the function in the same file, `api.Paginate` + `rest.Sort`, one shared pgstmt filter for `CountTotal`, `Count`, and the item query, `p.Sort.Do(b)` plus `Limit()`/`Offset()` on the item query, `items: []` when empty. No raw SQL beyond pgctx/pgstmt.
 
-**Cases:** Empty, fewer than limit, exactly limit, and limit + 1 rows; alternate and default sort; equal primary sort keys; invalid sort; page-size boundaries. Verify returned order and next-page state. Cursor changes must not silently mix incompatible ordering.
+`CountTotal` is used only after estimating the row count, and never when the filter can match more than 100,000 rows.
 
-## 7. Counted list when explicitly needed
+**Cases:** Empty, one page, several pages; `next` (and `totalCount` when used) correct; item count never exceeds `perPage`; default, valid, and invalid sort; missing `paginate` defaults to page 1/50.
 
-**Prompt:** Build a manageable list whose client explicitly needs an exact total and page-number navigation.
+## 7. Query beyond pgctx/pgstmt
 
-**Expect:** Implement the documented counted contract and an authorized, filter-consistent count query. Retain sorting and tie-breaker behavior. Do not force the count-free mode everywhere, make up totalPages, or add an exact count to unrelated endpoints.
+**Prompt:** A feature seems to need a CTE, window function, bulk COPY, or another DB library.
+
+**Expect:** Stop and ask the user before writing it.
 
 ## 8. Migrations and safe tests
 

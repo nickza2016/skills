@@ -47,8 +47,7 @@ The user's clarified architecture is **one Go module supporting multiple applica
 
 - **Preserved:** one module, multiple possible composition roots, application-owned features, shared pkg packages, database/sql + pgctx/pgstmt, explicit validation/auth/transactions, embedded migrations, and isolated real PostgreSQL tests.
 - **Generalized:** derive application names, count, kinds, and migration ownership from the target system. Separate binaries do not imply nested modules or a fixed audience split.
-- **Pagination by workload:** retain awareness of both source wrappers, but do not require exact totals on every list. Allow count-free next-page detection and cursor pagination where appropriate. Source wire key `next` is evidence; a new key such as `hasNext` is a target-contract choice, not a claim about existing endpoints.
-- **Sorting:** support allowlisted client sort on browsable lists unless a fixed domain order is explicitly required; add a deterministic tie-breaker. Existing source examples do not prove that every endpoint already meets this policy.
+- **Pagination and sorting:** every list uses `pkg/api.Paginate` and `pkg/rest.Sort`; see [pagination and sorting](pagination-and-sorting.md).
 - **Optionalized:** additional applications, River, cloud observability, and provider/infrastructure integrations. Do not require configuration for unselected modules.
 - **Safer lifecycle:** bounded readiness/cleanup, safe missing-context behavior, trusted-proxy policy, and startup configuration validation.
 - **Decoupled tests:** no global mutable DB name, seeded source identity, business sequence setup, production dotenv selection, or remote Redis fixture.

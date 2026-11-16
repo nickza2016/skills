@@ -51,7 +51,7 @@ Design for credible extensions with low migration impact, not every imaginable f
 
 ### 4. Plan efficient access and optional caching
 
-Map critical reads/writes to queries, indexes, filters, validated sorting, and workload-appropriate pagination. Exact totals are optional; large lists may need count-free next-page navigation.
+Map critical reads/writes to queries, indexes, filters, validated sorting, and pagination. Every list is paginated with `pkg/api.Paginate`.
 
 Evaluate Redis for specifically identified high-RPS read paths after considering PostgreSQL query/index efficiency, repeated keys, freshness, and cache hit potential. High RPS alone does not make every request cacheable. Document cache keys, scope, TTL, invalidation, concurrency, failure behavior, and source-of-truth boundaries. Read [Redis and access patterns](references/redis-and-access-patterns.md).
 

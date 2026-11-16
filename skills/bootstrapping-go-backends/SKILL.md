@@ -25,6 +25,7 @@ Use the XYZ structure and stack to build a repository capable of hosting multipl
 | Task | Read first |
 |---|---|
 | Every new project | [Stack](references/stack.md), [Architecture](references/architecture.md) |
+| Writing any feature function | [Writing functions](references/writing-functions.md) |
 | HTTP endpoints, validation, auth, errors, or lists | [API contracts](references/api-contracts.md) |
 | Every browsable list or pagination change | [Pagination and sorting](references/pagination-and-sorting.md) |
 | SQL, migrations, transactions, or DB fixtures | [Database and testing](references/database-and-testing.md) |
@@ -62,7 +63,11 @@ Implement a small feature relevant to the requested application: typed inputs/re
 
 For HTTP applications, define the wire format using the [API reference](references/api-contracts.md). For background work, define retry, idempotency, and transaction boundaries. Do not treat a DB in context as an automatically open transaction.
 
-For browsable lists, implement validated client-selected sorting and a deterministic default unless an explicitly documented fixed domain order is required. Select pagination per workload: exact totals are optional, not mandatory. Use count-free next-page navigation where totals are unnecessary; do not add a full count query merely because a source wrapper exposes total fields. Follow the user's contract examples rather than fixing pagination key names globally.
+Write Go functions following [writing functions](references/writing-functions.md):
+
+- SQL uses only pgctx and pgstmt. If something needs more than they offer, ask the user first.
+- Each function's params/result types and `Valid()` sit directly above it in the same file. Do not create new files unless the code is reused; reused code goes in `pkg/`.
+- Every list is paginated with `pkg/api.Paginate` and sorted with `pkg/rest.Sort`, rendered from [assets/pkg](assets/pkg/). Before using `CountTotal`, estimate the row count; skip it when the filter can match more than 100,000 rows. See [pagination and sorting](references/pagination-and-sorting.md).
 
 ### 5. Verify and hand off
 
@@ -75,7 +80,7 @@ For browsable lists, implement validated client-selected sorting and a determini
 
 ## Avoid blind inheritance
 
-- Do not replace the baseline with Gin/Fiber/Echo, GORM, or native pgxpool unless requested. The presence of pgx in the source does not make it the application query baseline.
+- Do not replace the baseline with Gin/Fiber/Echo, GORM, sqlx, or native pgxpool. The presence of pgx in the source does not make it the application query baseline.
 - Do not copy credentials, production endpoints, workflow destinations, business SQL/seeds, or source-specific bootstrap configuration.
 - Do not hardcode the source's application names, permission catalog, migration owner, local ports, or business domains into a new project.
 - Do not reproduce misleading pool configuration names, unchecked identity accessors, or untrusted proxy-header behavior.

@@ -1,0 +1,82 @@
+package rest
+
+import (
+	"encoding/json"
+	"reflect"
+	"strings"
+
+	"github.com/acoshift/arpc/v2"
+	"github.com/acoshift/pgsql/pgstmt"
+	"__MODULE__/pkg/codes"
+)
+
+var (
+	ErrInvalidSortOrder  = arpc.NewErrorCode(codes.InvalidSortOrder, "rest: sort must be asc or desc")
+	ErrInvalidSortColumn = arpc.NewErrorCode(codes.InvalidSortColumn, "rest: invalid sort column")
+)
+
+type Sort struct {
+	Column string `json:"column"`
+	Order  string `json:"order"`
+}
+
+func (s *Sort) UnmarshalJSON(b []byte) error {
+	var raw struct {
+		Column string `json:"column"`
+		Order  string `json:"order"`
+	}
+
+	if err := json.Unmarshal(b, &raw); err != nil {
+		return err
+	}
+
+	s.Column = raw.Column
+	s.Order = strings.ToLower(raw.Order)
+	if s.Order == "" {
+		s.Order = "asc"
+	}
+
+	if s.Order != "asc" && s.Order != "desc" {
+		return ErrInvalidSortOrder
+	}
+
+	return nil
+}
+
+func NewSort(column, order string) *Sort {
+	return &Sort{
+		Column: column,
+		Order:  order,
+	}
+}
+
+var _ json.Unmarshaler = (*Sort)(nil)
+
+func (s *Sort) Do(b pgstmt.SelectStatement) {
+	if s.Column == "" {
+		return
+	}
+	if s.Order == "desc" {
+		b.OrderBy(s.Column).Desc()
+		return
+	}
+	b.OrderBy(s.Column).Asc()
+}
+
+func (s *Sort) ValidateSort(resStruct interface{}) error {
+
+	val := reflect.ValueOf(resStruct)
+	if s.Column == "" {
+		return nil
+	}
+
+	for i := 0; i < val.NumField(); i++ {
+		t := val.Type().Field(i).Tag
+		if s.Column == t.Get("json") || s.Column == t.Get("db") {
+			s.Column = t.Get("db")
+			return nil
+		}
+	}
+
+	return ErrInvalidSortColumn
+}
