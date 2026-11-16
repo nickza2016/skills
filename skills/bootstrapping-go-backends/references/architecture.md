@@ -61,7 +61,7 @@ placement changes the module-root Docker build context.
 - Move genuinely reused operations, clients, DTOs, and helpers into `pkg/<domain-or-purpose>`. Do not import one application's package from another just to reuse a type or helper. For example, reporting should import `pkg/catalog`, not the inventory application's handler package.
 - Keep application-specific types near their owner. Do not create a catch-all `pkg/types` or `pkg/utils` by default.
 - Use constructor/dependency structs for lifecycle-bearing workers and clients; use pgctx for database request contexts. Do not add mutable globals simply because some source helpers use them.
-- Extract functions for meaningful reuse, test seams, or separate concerns, not pointless passthroughs.
+- Extract a function or method only when two or more callers use it. Never create single-use helpers, methods, or intermediate record structs; see [writing functions](writing-functions.md).
 - Use camelCase JSON and resource-scoped `id` when the method already identifies the resource. Define omitted/null/zero semantics before choosing pointer fields.
 - Sharing a Go module does not require every application to share credentials, audiences, a process, a network port, or a database. When multiple databases are required, define their owners and migration boundaries explicitly rather than assuming one global `schema` fits all.
 

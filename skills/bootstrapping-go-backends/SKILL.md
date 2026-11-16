@@ -67,6 +67,7 @@ Write Go functions following [writing functions](references/writing-functions.md
 
 - SQL uses only pgctx and pgstmt. If something needs more than they offer, ask the user first.
 - Each function's params/result types and `Valid()` sit directly above it in the same file. Do not create new files unless the code is reused; reused code goes in `pkg/`.
+- Do not create a helper function or method that has only one caller; write it inside the function. Map values in SQL and scan straight into the result type.
 - Every list is paginated with `pkg/api.Paginate` and sorted with `pkg/rest.Sort`, rendered from [assets/pkg](assets/pkg/). Before using `CountTotal`, estimate the row count; skip it when the filter can match more than 100,000 rows. See [pagination and sorting](references/pagination-and-sorting.md).
 
 ### 5. Verify and hand off
