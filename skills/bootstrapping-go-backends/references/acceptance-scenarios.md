@@ -48,7 +48,7 @@ Use these cases to evaluate skill behavior. A plan or dry-run is behavioral revi
 
 **Expect:** `ListParams`/`ListItem`/`ListResult` above the function in the same file, `api.Paginate` + `rest.Sort`, one shared pgstmt filter for `CountTotal`, `Count`, and the item query, `p.Sort.Do(b)` plus `Limit()`/`Offset()` on the item query, `items: []` when empty. No raw SQL beyond pgctx/pgstmt.
 
-`CountTotal` is used only after estimating the row count, and never when the filter can match more than 100,000 rows.
+No single-use helpers or row-conversion methods; rows are scanned straight into `ListItem`. `CountTotal` is used only after estimating the row count, and never when the filter can match more than 100,000 rows.
 
 **Cases:** Empty, one page, several pages; `next` (and `totalCount` when used) correct; item count never exceeds `perPage`; default, valid, and invalid sort; missing `paginate` defaults to page 1/50.
 
