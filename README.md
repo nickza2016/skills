@@ -27,6 +27,8 @@ When the user says "install https://github.com/nickza2016/skills into this proje
 
 Then read [initializing-agent-teams](skills/initializing-agent-teams/SKILL.md). Show one quickly confirmable set of model defaults and file changes. **After the user's confirmation**, create all seven *definitions* for the active harness in the target project, verify native discovery and model/tool behavior as far as the installed client permits, and continue the original task. Do not merely describe or promise creation. Seven definitions do not mean seven agents run on every task. A URL or copied AGENTS.md alone does not install skills or create agents; Pi also requires a compatible trusted extension. Never silently switch providers, install extensions, overwrite unrelated project rules, or commit/push/deploy without separate authorization.
 
+**Keep installed skills local:** add their complete installed paths to the consuming project's `.gitignore`, verify effective exclusion and that no installed files are indexed, and never commit/push those copies. Already staged/tracked copies require explicit remediation approval; `.gitignore` alone does not untrack them. This does not exclude the authored `skills/` source maintained in this distribution repository. See the [installation Git exclusion rules](skills/initializing-agent-teams/references/installing-in-project.md#keep-installed-skills-out-of-git).
+
 ## Quick project entrypoint
 
 With an existing local checkout and Node 20+, preview project-only setup (replace both paths and the harness):

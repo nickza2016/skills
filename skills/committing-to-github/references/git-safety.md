@@ -46,6 +46,7 @@ If a native commit specialist is delegated, provide the same input/stored-messag
 
 ## Commit and push gates
 
+- Enforce the [installed skill exclusion gate](../SKILL.md#installed-skill-exclusion-gate): consuming projects must ignore complete installed copies/resources/symlinks in project `.gitignore`, verify effective rules and the index after staging, and exclude them from outgoing history. Stop for explicit remediation approval if already staged/tracked/publishable; never delete local copies or force-add them. Keep authored skill-distribution source tracked.
 - Review staged paths/content, staged whitespace/check failures, and any project-required verification before committing. Distinguish failed, blocked, unrun, and passed checks.
 - Follow the active command-input and stored-message requirements separately. Use real newlines and inspect `git log -1 --format=%B` after a commit attempt that may have succeeded.
 - After a commit attempt, verify HEAD and exit/error evidence before deciding whether a commit exists. Fixing a hook does not authorize bypassing it or altering an older commit.

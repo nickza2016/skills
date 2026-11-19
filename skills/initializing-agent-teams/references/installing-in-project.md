@@ -16,6 +16,19 @@ If the user said to replace duplicate skills, compare each destination by exact 
 
 Verify that every installed skill and its referenced resources can be discovered/read by the actual harness (restart/reload only when its documented behavior requires it). Record the source commit and exact destination paths. If no project-local skill loader is supported, report the limitation and use a verified supported alternative with approval; do not rename a mere pointer to "installed."
 
+### Keep installed skills out of Git
+
+As part of installation, add the verified installed paths to the consuming project's `.gitignore`; installed copies must remain local and must not be committed or pushed. Cover the complete skill directories, references, scripts, assets, hidden files, installed symlinks, and any bundle checkout kept inside the project. Preserve existing ignore rules and append only missing entries. Use exact root-anchored entries when the discovery directory contains other project-owned work. For example, **only when this is the verified destination**, add:
+
+```gitignore
+# Local installed skills, not application source.
+/.agents/skills/committing-to-github
+```
+
+Omit the trailing slash on an exact skill entry so it covers either a directory or an installed symlink. Do not blindly copy this example for every harness or ignore the whole harness configuration directory. Global ignore settings or `.git/info/exclude` alone are insufficient. Keep authored skill source in a skill-distribution repository tracked; this rule applies to installations in consuming projects, not this bundle's source.
+
+Verify effective exclusion of the installed root/symlink and all resource files with `git check-ignore --no-index -- <installed-path>`; use `git check-ignore -v --no-index -- <installed-path>` to inspect rule provenance and negations. Verify `git ls-files -- <installed-path>` is empty and inspect the staged diff before reporting Git exclusion complete. If already staged/tracked or present in outgoing history, report the blocker and request explicit approval for targeted index/history remediation; never delete local copies or silently untrack/rewrite them. If `.gitignore` edits are disallowed, stop for that specific approval. Keep `.gitignore` itself eligible for a later authorized commit. The agent-team helper creates agent definitions and entrypoints, not installed skill copies or these ignore rules; the installing agent must perform and verify this step separately.
+
 ## 3. Propose models once, then create the agents
 
 Read [the first-use workflow](../SKILL.md), [adapter limitations](native-adapters.md), and [the canonical seven roles](../assets/roles.json). Check actual available models, costs/permission differences, and native agent support. Offer one quickly confirmable recommendation for scout, implementer, verifier, advisor, git-publisher, db-reviewer, and security-reviewer; choose `inherit` where availability is unknown. Present a dry-run with source commit, files, append/conflict decisions, and capability caveats. Ask once for model/configuration approval; prior permission to overwrite duplicate **skills** is not permission to change models or install Pi extensions.
@@ -30,4 +43,4 @@ Create the seven *definitions* only for the currently active harness: `.cursor/a
 
 Check the actual project files and native registration with the installed client, model/tool configuration, the project instruction entrypoint in a fresh session where feasible, and a safe bounded subagent invocation when authorized. Report what is verified and what remains untested; generated files, structural tests, and `nativeVerification: pending` are not proof the harness loaded them. In Letta, explicitly read AGENTS.md when automatic startup injection is unverified. Never install an extension or switch a paid model silently to make the smoke test pass.
 
-Finish with the installed skill names, source SHA, created/replaced files, confirmed model choices, native checks/results, and exact blockers. Continue the user's original task if within scope instead of ending at a setup plan. Do not commit, push, open a PR, or deploy without separate task-specific authorization.
+Finish with the installed skill names, source SHA, created/replaced files, `.gitignore` entries and effective-ignore/index results, confirmed model choices, native checks/results, and exact blockers. Continue the user's original task if within scope instead of ending at a setup plan. Do not commit, push, open a PR, or deploy without separate task-specific authorization.
