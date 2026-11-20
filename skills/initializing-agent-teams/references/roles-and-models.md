@@ -20,6 +20,8 @@ The helper's portable fallback is inheritance, not a claim that one model is opt
 
 Do not fabricate a live model list from screenshots, prior defaults, or configured-but-unavailable profiles. Use the actual client/catalog or ask for the user's available choices. If unavailable, explain inheritance rather than inventing a model or silently selecting a paid/provider-changing fallback. Native model parameters differ; do not append a universal "medium" suffix or write unsupported effort settings.
 
+In Cursor `.cursor/agents` YAML, the model field must be an unquoted scalar: `model: claude-sonnet-5-5-high`. Quotes around the model name prevent Cursor from loading it. `model: inherit` is likewise unquoted.
+
 Ask once with a recommended preset rather than seven separate questions. Store confirmed choices in the generated per-harness manifest. A later unavailable model, changed preset, or conflicting config needs a specific decision; do not auto-upgrade or rewrite the file.
 
 ## Efficient task handoffs

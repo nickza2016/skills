@@ -45,7 +45,7 @@ After the conversational confirmation and capability checks:
 node "<xyz-skills>/skills/initializing-agent-teams/scripts/init-agent-team.mjs" --project "<project>" --harness cursor --apply --approved --capabilities-confirmed
 ```
 
-Use `--models "<approved-model-map.json>"` for confirmed overrides, starting from [the model-map example](assets/model-overrides.example.json). `inherit` becomes an omitted model field where required by the adapter, not an invalid literal Codex model ID. Reasoning controls remain inherited unless configured separately through verified native settings; the helper does not invent cross-harness effort fields.
+Use `--models "<approved-model-map.json>"` for confirmed overrides, starting from [the model-map example](assets/model-overrides.example.json). `inherit` becomes an omitted model field where required by the adapter, not an invalid literal Codex model ID. In Cursor `.cursor/agents` frontmatter, write an unquoted scalar such as `model: claude-sonnet-5-5-high`; a quoted model ID is not loaded. Reasoning controls remain inherited unless configured separately through verified native settings; the helper does not invent cross-harness effort fields.
 
 Existing AGENTS.md/CLAUDE.md content is preserved. If it needs a new pointer, review the plan and explicitly add `--append-entrypoints`; this appends a marked block without replacing existing text. Conflicting definitions, changed managed blocks, symlinks/junctions, hardlinks, and malformed markers stop the plan. No force/overwrite mode is provided.
 

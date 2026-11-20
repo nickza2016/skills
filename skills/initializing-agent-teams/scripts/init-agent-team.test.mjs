@@ -43,7 +43,11 @@ for (const harness of ['cursor', 'codex', 'claude', 'letta', 'pi']) {
       assert.ok(!scout.includes('model = "inherit"'));
       assert.ok(!scout.includes('sandbox_mode'));
     }
-    if (harness === 'cursor') assert.ok(scout.includes('readonly: true'));
+    if (harness === 'cursor') {
+      assert.ok(scout.includes('readonly: true'));
+      assert.ok(scout.includes('\nmodel: inherit\n'));
+      assert.ok(!scout.includes('model: "'));
+    }
     if (harness === 'letta' || harness === 'pi') assert.ok(!scout.includes('\nmodel:'));
     if (harness === 'claude') assert.ok(plan.files.find(file => file.relative === 'CLAUDE.md').content.includes('@AGENTS.md'));
   }));
@@ -118,7 +122,12 @@ test('explicit model IDs are serialized without pretending availability', () => 
   for (const harness of ['cursor', 'codex', 'claude', 'letta', 'pi']) {
     const plan = makePlan(options(root, harness, { models: { scout: 'fixture/model-v1' } }));
     const scout = plan.files.find(file => file.relative.includes('xyz-scout.')).content;
-    assert.ok(scout.includes('"fixture/model-v1"'));
+    if (harness === 'cursor') {
+      assert.ok(scout.includes('\nmodel: fixture/model-v1\n'));
+      assert.ok(!scout.includes('model: "'));
+    } else {
+      assert.ok(scout.includes('"fixture/model-v1"'));
+    }
     assert.equal(plan.models.implementer, 'inherit');
   }
 }));

@@ -71,7 +71,9 @@ function renderAgent(harness, role, model) {
       + `developer_instructions = ${json(body)}\n`;
   }
   const lines = ['---', `name: ${name}`, `description: ${json(role.description)}`];
-  if (model !== 'inherit' || harness === 'cursor' || harness === 'claude') lines.push(`model: ${json(model)}`);
+  // Cursor does not load a quoted model scalar. Keep Codex/Claude string encoding unchanged.
+  const modelField = harness === 'cursor' ? model : json(model);
+  if (model !== 'inherit' || harness === 'cursor' || harness === 'claude') lines.push(`model: ${modelField}`);
   if (harness === 'cursor') lines.push(`readonly: ${role.access === 'read'}`);
   if (harness === 'claude') {
     lines.push(`tools: ${role.access === 'read' ? 'Read, Glob, Grep' : role.access === 'write' ? 'Read, Glob, Grep, Edit, Write, Bash' : 'Read, Glob, Grep, Bash'}`);

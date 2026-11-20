@@ -4,11 +4,13 @@ These formats were researched on 2026-10-22; verify the installed client before 
 
 | Harness | Project definition | Model inheritance | Read-role restriction |
 |---|---|---|---|
-| Cursor | `.cursor/agents/xyz-<role>.md`, YAML frontmatter | Explicit `model: inherit` | `readonly: true` for scout/advisor/DB/security |
+| Cursor | `.cursor/agents/xyz-<role>.md`, YAML frontmatter | Explicit unquoted `model: inherit` | `readonly: true` for scout/advisor/DB/security |
 | Codex | `.codex/agents/xyz-<role>.toml` | Omit model/effort fields | Parent permissions inherited; role instructions alone are not a sandbox |
 | Claude Code | `.claude/agents/xyz-<role>.md`, YAML frontmatter | Explicit `model: inherit` | Read/Glob/Grep tool allowlist; default permission mode |
 | Letta | `.letta/agents/xyz-<role>.md`, YAML frontmatter | Omit model field | Glob/Grep/Read allowlist; verify tool names in installed toolset |
 | Pi compatible example extension | `.pi/agents/xyz-<role>.md`, YAML frontmatter | Omit model field | Extension tools read/grep/find/ls; project-scope opt-in required |
+
+Cursor loads `model` only as an unquoted YAML scalar, for example `model: claude-sonnet-5-5-high`. A quoted value such as `model: "claude-sonnet-5-5-high"` is not loaded. The same rule applies to `inherit`. Do not JSON-encode the Cursor model field. Description text may stay quoted. Codex TOML strings stay quoted.
 
 Codex standalone TOML requires name, description, and developer_instructions. Do not write a fake `readonly` or `sandbox_mode` field to claim separate permissions; custom agents inherit parent permissions/provider/MCP behavior in the researched client. Older Codex configuration layouts may differ.
 
